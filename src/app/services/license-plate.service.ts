@@ -12,4 +12,15 @@ export class LicensePlateService {
   filterByType(type: string) {
     return of(LICENSE_PLATES.filter(p => p.type === type));
   }
+
+  search(query: string) {
+    const lowerQuery = query.toLowerCase();
+  
+    const filtered = LICENSE_PLATES.filter(p =>
+      p.number.toLowerCase().includes(lowerQuery) ||
+      p.type.toLowerCase().includes(lowerQuery)
+    );
+  
+    return of(filtered);
+  }
 }

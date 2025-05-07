@@ -1,0 +1,96 @@
+<p>license-plate works!</p>
+<p-toolbar styleClass="mb-4">
+  <ng-template #start>
+    <p-button label="Thêm mới" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+    <p-button label="Xoá đã chọn" icon="pi pi-trash" severity="secondary" outlined [disabled]="!selectedPlates.length"
+      (onClick)="deleteSelectedPlates()" />
+  </ng-template>
+  <ng-template #end>
+    <p-fileUpload
+      name="csv"
+      mode="basic"
+      chooseLabel="Upload CSV"
+      accept=".csv"
+      (onSelect)="onCSVUpload($event)"
+      styleClass="p-button-secondary"
+      [auto]="true"
+    />
+  </ng-template>
+</p-toolbar>
+
+<p-table #dt [value]="plates()" [(selection)]="selectedPlates" dataKey="id" [paginator]="true" [rows]="5"
+  [rowHover]="true" currentPageReportTemplate="Hiển thị {first} đến {last} trong {totalRecords} biển số"
+  [rowsPerPageOptions]="[5, 10, 20]">
+  <ng-template pTemplate="caption">
+    <div class="flex items-center justify-between">
+      <h5 class="m-0">Quản lý Biển số</h5>
+      <input pInputText type="text" placeholder="Tìm kiếm..." (input)="onGlobalFilter($event)" />
+    </div>
+  </ng-template>
+
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 3rem"><p-tableHeaderCheckbox /></th>
+      <th>Biển số</th>
+      <th>Loại xe</th>
+      <th>Hoạt động</th>
+      <th pSortableColumn="violations_count">Lỗi vi phạm <p-sortIcon field="violations_count" /></th>
+      <th>Lần chạy gần nhất</th>
+      <th></th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-plate>
+    <tr>
+      <td><p-tableCheckbox [value]="plate" /></td>
+      <td>{{ plate.number }}</td>
+      <td>{{ plate.type }}</td>
+      <td>{{ plate.active ? '✔️' : '❌' }}</td>
+      <td>{{ plate.violations_count ?? 0 }}</td>
+      <td>{{ plate.last_run_at | date: 'short' }}</td>
+      <td>
+        <p-button icon="pi pi-pencil" class="mr-2" rounded outlined (click)="editPlate(plate)" />
+        <p-button icon="pi pi-trash" severity="danger" rounded outlined (click)="deletePlate(plate)" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="plateDialog" [style]="{ width: '400px' }" header="Thông tin biển số" [modal]="true">
+  <div class="flex flex-col gap-4">
+    <div>
+      <label class="block font-bold mb-2">Biển số</label>
+      <input pInputText [(ngModel)]="plate.number" required autofocus />
+      <small class="text-red-500" *ngIf="submitted && !plate.number">Không được để trống</small>
+    </div>
+
+    <div>
+      <label class="block font-bold mb-2">Loại xe</label>
+      <div class="flex gap-3">
+        <p-radiobutton name="type" value="oto" [(ngModel)]="plate.type" inputId="oto" />
+        <label for="oto">Ô tô</label>
+        <p-radiobutton name="type" value="xe máy" [(ngModel)]="plate.type" inputId="xe-may" />
+        <label for="xe-may">Xe máy</label>
+      </div>
+    </div>
+
+    <div>
+      <label class="block font-bold mb-2">Trạng thái</label>
+      <div class="flex gap-3">
+        <p-radiobutton name="active" [value]="true" [(ngModel)]="plate.active" inputId="hoatdong" />
+        <label for="hoatdong">Hoạt động</label>
+        <p-radiobutton name="active" [value]="false" [(ngModel)]="plate.active" inputId="tamdung" />
+        <label for="tamdung">Tạm dừng</label>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #footer>
+    <p-button label="Huỷ" icon="pi pi-times" text (click)="hideDialog()" />
+    <p-button label="Lưu" icon="pi pi-check" (click)="savePlate()" />
+  </ng-template>
+</p-dialog>
+
+<p-toast />
+<p-confirmdialog />

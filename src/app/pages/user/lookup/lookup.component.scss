@@ -1,0 +1,25 @@
+.lookup-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+    .vehicle-type {
+        margin-bottom: 1rem;
+        label {
+            margin-right: 1rem;
+        }
+    }
+
+    .plate-input {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .lookup-btn {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}

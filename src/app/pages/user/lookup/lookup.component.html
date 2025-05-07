@@ -1,0 +1,28 @@
+<div class="lookup-container">
+    <h2>Tra cứu vi phạm giao thông</h2>
+
+    <div class="vehicle-type">
+        <label><input type="radio" [(ngModel)]="vehicleType" value="oto" /> Ô tô</label>
+        <label><input type="radio" [(ngModel)]="vehicleType" value="xe máy" /> Xe máy</label>
+        <label><input type="radio" [(ngModel)]="vehicleType" value="xe máy điện" /> Xe máy điện</label>
+    </div>
+
+    <input
+        type="text"
+        pInputText
+        placeholder="Nhập biển số xe (VD: 30K12345)"
+        [(ngModel)]="plate"
+        class="plate-input"
+    />
+
+    <p-button label="Tra cứu" class="lookup-btn" (onClick)="onLookup()" />
+
+    <div *ngIf="results.length">
+        <h3>Kết quả tra cứu:</h3>
+        <ul>
+            <li *ngFor="let r of results">
+                {{ r.date }} - {{ r.violation }} tại {{ r.location }} (Phạt: {{ r.fine | currency:'VND' }})
+            </li>
+        </ul>
+    </div>
+</div>
